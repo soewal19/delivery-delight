@@ -6,6 +6,7 @@ import { useCartStore } from '@/store/cartStore';
 import { useUserStore } from '@/store/userStore';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import SearchBar from '@/components/SearchBar';
 import { ConnectionStatus } from './ConnectionStatus';
 import { AuthDialog } from './auth/AuthDialog';
@@ -14,6 +15,12 @@ const Header = () => {
   const itemCount = useCartStore((s) => s.getItemCount());
   const user = useUserStore((s) => s.user);
   const logout = useUserStore((s) => s.logout);
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+  const baseUrl = API_URL.replace('/api', '');
+  const fullAvatarUrl = user?.avatar 
+    ? (user.avatar.startsWith('http') ? user.avatar : `${baseUrl}${user.avatar.startsWith('/') ? '' : '/'}${user.avatar}`)
+    : '';
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -48,9 +55,14 @@ const Header = () => {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Link to="/profile">
-                    <Button variant="ghost" size="sm" className="gap-2">
-                      <UserIcon className="h-4 w-4" />
-                      <span className="hidden md:inline">{user.name || 'Profile'}</span>
+                    <Button variant="ghost" size="sm" className="gap-2 px-1">
+                      <Avatar className="h-8 w-8 ring-2 ring-primary/20">
+                        <AvatarImage src={fullAvatarUrl} alt={user.name || user.email} className="object-cover" />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-[10px]">
+                          {(user.name || user.email)[0].toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="hidden md:inline ml-1">{user.name || 'Profile'}</span>
                     </Button>
                   </Link>
                 </TooltipTrigger>

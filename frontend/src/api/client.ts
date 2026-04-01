@@ -1,4 +1,12 @@
-import type { Product, Shop, Coupon, Order, CartItem, User } from '@/types';
+import type { Product, Shop, Coupon, Order, CartItem } from '@/types';
+
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  avatar?: string;
+  // Add other user properties as needed
+}
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
